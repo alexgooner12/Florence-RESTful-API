@@ -72,4 +72,24 @@ router.patch('/mark_pending/:id', async (req, res) => {
     }
 });
 
+router.get('/:id/comments/', async (req, res) => {
+    try {
+        const issueComments = await Issue.findById(req.params.id).select('comments');
+        res.send({ issueComments });
+    } catch (error) {
+        res.send({ error });
+    }
+});
+
+router.post('/:id/comments/', async (req, res) => {
+    try {
+        const issueComments = await Issue.updateOne({ _id: req.params.id }, { 
+            $addToSet: { comments: req.body.comment } 
+        });
+        res.send({ issueComments });
+    } catch (error) {
+        res.send({ error });
+    }
+});
+
 module.exports = router;
