@@ -49,4 +49,27 @@ router.patch('/:id', async (req, res) => {
     }
 });
 
+
+router.patch('/mark_completed/:id', async (req, res) => {
+    try {
+        const updatedIssue = await Issue.updateOne({ _id: req.params.id }, { 
+            $set: { isCompleted: req.body.isCompleted, isPending: false } 
+        });
+        res.send({ updatedIssue });
+    } catch (error) {
+        res.send({ error });
+    }
+});
+
+router.patch('/mark_pending/:id', async (req, res) => {
+    try {
+        const updatedIssue = await Issue.updateOne({ _id: req.params.id }, { 
+            $set: { isPending: req.body.isPending } 
+        });
+        res.send({ updatedIssue });
+    } catch (error) {
+        res.send({ error });
+    }
+});
+
 module.exports = router;
