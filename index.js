@@ -6,6 +6,11 @@ require('dotenv').config();
 const port = process.env.PORT || 4000;
 const uri = process.env.ATLAS_URI;
 
+app.use(express.json());
+
+const issuesRoute = require('./routes/issues');
+app.use('/issues', issuesRoute);
+
 mongoose.connect(uri, { 
     useNewUrlParser: true,
     useUnifiedTopology: true, 
