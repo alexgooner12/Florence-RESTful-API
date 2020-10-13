@@ -2,14 +2,16 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 require('dotenv').config();
+const issuesRoute = require('./routes/issues');
+const filesRoute = require('./routes/files');
 
 const port = process.env.PORT || 4000;
 const uri = process.env.ATLAS_URI;
 
 app.use(express.json());
-
-const issuesRoute = require('./routes/issues');
 app.use('/issues', issuesRoute);
+app.use('/files', filesRoute);
+
 
 mongoose.connect(uri, { 
     useNewUrlParser: true,
