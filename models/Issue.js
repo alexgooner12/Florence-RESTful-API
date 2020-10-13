@@ -3,27 +3,22 @@ const mongoose = require('mongoose');
 const IssueSchema = mongoose.Schema({
     title: {
         type: String,
-        required: true
+        unique: true,
+        trim: true
     },
     isCompleted: {
-        type: Boolean, 
-        default: false,
-        required: true
+        type: Boolean,
+        default: false
     },
     isPending: {
-        type: Boolean, 
-        default: false,
-        required: true
+        type: Boolean,
+        default: false
     },
     files: {
         type: Array, 
-        default: [],
-        required: true
     },
     comments: {
         type: Array, 
-        default: [],
-        required: true
     }
 });
 
