@@ -6,13 +6,8 @@ const IssueSchema = mongoose.Schema({
         unique: true,
         trim: true
     },
-    isCompleted: {
-        type: Boolean,
-        default: false
-    },
-    isPending: {
-        type: Boolean,
-        default: false
+    status: {
+        type: String
     },
     files: {
         type: Array, 
