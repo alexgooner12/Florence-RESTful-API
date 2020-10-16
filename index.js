@@ -3,15 +3,12 @@ const app = express();
 const mongoose = require('mongoose');
 require('dotenv').config();
 const issuesRoute = require('./routes/issues');
-const filesRoute = require('./routes/files');
 
 const port = process.env.PORT || 4000;
 const uri = process.env.ATLAS_URI;
 
 app.use(express.json());
 app.use('/issues', issuesRoute);
-app.use('/files', filesRoute);
-
 
 mongoose.connect(uri, { 
     useNewUrlParser: true,
@@ -21,5 +18,14 @@ mongoose.connect(uri, {
 });
 
 mongoose.connection.once('open', () => console.log("Connected to DB"));
+
+let gfs;
+mongoose.connection.once("open", () => {
+  // init stream
+  gfs = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+    bucketName: "uploads"
+  });
+  console.log('Grif connceted');
+});
 
 app.listen(port, () => console.log('running'));

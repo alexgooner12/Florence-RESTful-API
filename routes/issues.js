@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Issue = require('../models/Issue');
+const upload = require('../storage');
 
 router.get('/', async (req, res) => {
     try {
@@ -37,6 +38,17 @@ router.post('/', async (req, res) => {
         res.send({ error });
     }
 });
+
+router.post('/:id/files', upload.single('file'), async (req, res) => {
+    try {
+        const updatedIssue = await Issue.updateOne({ _id: req.params.id }, { 
+            $addToSet: { files: req.file } 
+        });
+        res.send({ updatedIssue });
+    } catch (error) {
+        res.send({ error });
+    }
+ });
 
 router.patch('/:id', async (req, res) => {
     try {
