@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const port = process.env.PORT || 4000;
-const uri = process.env.ATLAS_URI;
+const uri = process.env.NODE_ENV !== 'test' ? process.env.ATLAS_URI : process.env.ATLAS_TEST_URI;
 
 app.use(express.json());
 
@@ -21,3 +21,5 @@ mongoose.connect(uri, {
 mongoose.connection.once('open', () => console.log("Connected to DB"));
 
 app.listen(port, () => console.log('running'));
+
+module.exports = app;

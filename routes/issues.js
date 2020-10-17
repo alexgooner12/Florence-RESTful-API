@@ -29,10 +29,10 @@ router.delete('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const issue = new Issue({ title: req.body.title });
     try {
-        const savedIssue = await issue.save();
-        res.send({ savedIssue });
+        const newIssue = new Issue(req.body);
+        const issue = await newIssue.save();
+        res.send({ issue });
     } catch (error) {
         res.send({ error });
     }
@@ -40,10 +40,10 @@ router.post('/', async (req, res) => {
 
 router.patch('/:id', async (req, res) => {
     try {
-        const updatedIssue = await Issue.updateOne({ _id: req.params.id }, {
+        const issue = await Issue.updateOne({ _id: req.params.id }, {
             $set: req.body
         });
-        res.send({ updatedIssue });
+        res.send({ issue });
     } catch (error) {
         res.send({ error });
     }
