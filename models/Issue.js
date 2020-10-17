@@ -5,25 +5,17 @@ const IssueSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    isCompleted: {
-        type: Boolean, 
-        default: false,
-        required: true
-    },
-    isPending: {
-        type: Boolean, 
-        default: false,
-        required: true
+    status: {
+        type: String,
+        default: 'empty'
     },
     files: {
         type: Array, 
-        default: [],
-        required: true
+        default: []
     },
     comments: {
         type: Array, 
-        default: [],
-        required: true
+        default: []
     }
 });
 
