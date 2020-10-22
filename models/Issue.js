@@ -1,22 +1,23 @@
 const mongoose = require('mongoose');
+const { statusValues } = require('../constants');
 
 const IssueSchema = mongoose.Schema({
     title: {
         type: String,
-        required: true
+        uniq: true,
+        trim: true
     },
     status: {
         type: String,
-        default: 'empty'
+        default: statusValues.INCOMPLETE
     },
     files: {
-        type: Array, 
-        default: []
+        type: Array
     },
     comments: {
-        type: Array, 
-        default: []
+        type: Array
     }
 });
 
 module.exports = mongoose.model('Issue', IssueSchema);
+
