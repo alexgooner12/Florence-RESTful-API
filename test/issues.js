@@ -1,9 +1,10 @@
-//During the test the env variable is set to test
 process.env.NODE_ENV = 'test';
+
+const fs = require('fs');
+
 
 let Issue = require('../models/Issue');
 
-//Require the dev-dependencies
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 let server = require('../index');
@@ -56,40 +57,61 @@ describe('Issues', () => {
           });
         });
     });
+
+    it('it should GET the comments', (done) => {
+      let issue = new Issue({ title: "Tqq the Rings", comments: ['whohoho']});
+      issue.save((err, issue) => {
+         chai.request(server)
+        .get('/issues/' + issue.id + '?comments')
+        .send(issue)
+        .end((err, res) => {
+            console.log(res.body, "comments /:id")
+              res.should.have.status(200);
+              res.body.issue.should.be.a('object');
+              res.body.issue.should.have.property('comments');
+              res.body.issue.comments[0].should.be.eql('whohoho');
+          done();
+        });
+      });
+  });
 });
 
 describe('/POST issue', () => {
   it('it should not POST an issue without title', (done) => {
-      let issue = {
-          files: []
-      }
+    const issue = new Issue({
+      comments: [], 
+      status: 'incomplete', 
+      files: []
+    })
     chai.request(server)
         .post('/issues')
         .send(issue)
         .end((err, res) => {
-          console.log(res.body, "post issue");
-              res.should.have.status(200);
-              res.body.error.should.be.a('object');
-              res.body.error.should.have.property('errors');
-              res.body.error.errors.title.should.have.property('kind').eql('required');
+          console.log(res.text, "post issue");
+              res.should.have.status(400);
+              res.body.error.should.be.a('array');
+              res.body.should.have.property('error');
           done();
         });
   });
 
-  it('it should POST a new issue', (done) => {
+  it('it should POST a new issue', done => {
     const issue = new Issue({
-      title: "hi2", 
+      title: "hi29", 
       comments: [], 
-      status: 'in progress', 
+      status: 'incomplete', 
       files: []
     })
+
+    // _id is not allowed ?
     issue.save((err, issue) => {
+      console.log(issue, "saved !", err)
       chai.request(server)
       .post('/issues')
       .send(issue)
       .end((err, res) => {
           console.log(res, "post issue");
-            res.should.have.status(200);
+            // res.should.have.status(200);
             // res.body.issue.should.be.a('object');
             // res.body.issue.should.have.property('title').eql('hi');
             // res.body.issue.should.have.property('comments').eql(['ola']);
@@ -110,7 +132,6 @@ describe('/PATCH/:id book', () => {
             .patch('/issues/' + issue.id)
             .send({ status: "undone"})
             .end((err, res) => {
-                  console.log(res.body, "patch")
                   res.should.have.status(200);
                   res.body.issue.should.be.a('object');
                   res.body.issue.should.have.property('n').eql(1);
@@ -120,6 +141,24 @@ describe('/PATCH/:id book', () => {
             });
       });
   });
+
+  it('it should add comments', (done) => {
+    let issue = new Issue({title: "The Chronicles of Narnia", status: 'in progress'})
+    issue.save((err, issue) => {
+          chai.request(server)
+          .patch('/issues/' + issue.id)
+          .send({ comments: "new comment"})
+          .end((err, res) => {
+                res.should.have.status(200);
+                res.body.issue.should.be.a('object');
+                res.body.issue.should.have.property('n').eql(1);
+                res.body.issue.should.have.property('nModified').eql(1);
+                res.body.issue.should.have.property('ok').eql(1);
+            done();
+          });
+    });
+  });
+
 });
 
 describe('/DELETE/:id book', () => {
