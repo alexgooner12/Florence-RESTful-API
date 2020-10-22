@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 require('dotenv').config();
+const fs = require('fs');
 
 const port = process.env.PORT || 4000;
 const uri = process.env.NODE_ENV !== 'test' ? process.env.ATLAS_URI : process.env.ATLAS_TEST_URI;
@@ -17,6 +18,14 @@ mongoose.connect(uri, {
     useFindAndModify: false,
     useCreateIndex: true
 });
+
+let gfs;
+mongoose.connection.once("open", () => {
+  gfs = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+    bucketName: "uploads"
+  });
+});
+
 
 mongoose.connection.once('open', () => console.log("Connected to DB"));
 

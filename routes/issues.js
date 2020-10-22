@@ -1,52 +1,8 @@
 const router = require('express').Router();
-const Issue = require('../models/Issue');
+const { loadIssues, loadIssue, deleteIssue, createIssue, editIssue } = require('../controlers/issues');
+const upload = require('../storage');
 
-router.get('/', async (req, res) => {
-    try {
-        const issueList = await Issue.find();
-        res.send({ issueList });
-    } catch (error) {
-        res.send({ error });
-    }
-});
-
-router.get('/:id', async (req, res) => {
-    try {
-        const issue = await Issue.findById(req.params.id);
-        res.send({ issue });
-    } catch (error) {
-        res.send({ error });
-    }
-});
-
-router.delete('/:id', async (req, res) => {
-    try {
-        const issue = await Issue.deleteOne({ _id: req.params.id });
-        res.send({ issue });
-    } catch (error) {
-        res.send({ error });
-    }
-});
-
-router.post('/', async (req, res) => {
-    try {
-        const newIssue = new Issue(req.body);
-        const issue = await newIssue.save();
-        res.send({ issue });
-    } catch (error) {
-        res.send({ error });
-    }
-});
-
-router.patch('/:id', async (req, res) => {
-    try {
-        const issue = await Issue.updateOne({ _id: req.params.id }, {
-            $set: req.body
-        });
-        res.send({ issue });
-    } catch (error) {
-        res.send({ error });
-    }
-});
+router.route('/').get(loadIssues).post(createIssue);
+router.route('/:id').get(loadIssue).patch(upload.single('file'), editIssue).delete(deleteIssue);
 
 module.exports = router;
