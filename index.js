@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 require('dotenv').config();
-const fs = require('fs');
 
 const port = process.env.PORT || 4000;
 const uri = process.env.NODE_ENV !== 'test' ? process.env.ATLAS_URI : process.env.ATLAS_TEST_URI;

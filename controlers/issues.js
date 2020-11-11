@@ -24,7 +24,9 @@ exports.deleteIssue = async (req, res) => {
     if (!req.params.id) return res.status(400).send({ error: 'ID has not been provided' });
 
     try {
-        const issue = await Issue.deleteOne({ _id: req.params.id });
+        const issue = await Issue.findByIdAndDelete({ _id: req.params.id }, {
+            returnOriginal: false
+        });
         res.send({ issue });
     } catch (error) {
         res.send({ error });
@@ -49,8 +51,10 @@ exports.editIssue = async (req, res) => {
     const { method, payload } = getEditIssueAction(req);
 
     try {
-        const issue = await Issue.updateOne({ _id: req.params.id }, {
+        const issue = await Issue.findByIdAndUpdate({ _id: req.params.id }, {
             [method]: payload
+        }, {
+            returnOriginal: false
         });
         res.send({ issue });
     } catch (error) {
